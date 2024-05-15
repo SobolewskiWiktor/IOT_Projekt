@@ -1,0 +1,1 @@
+HostName=SobolProject.azure-devices.net;DeviceId=Device_1;SharedAccessKey=tE8FtVuSilxXszwB7bl5gHBXpb3hvpTPjAIoTIU+6m0=

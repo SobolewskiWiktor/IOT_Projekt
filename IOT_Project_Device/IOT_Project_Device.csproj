@@ -14,4 +14,16 @@
     <PackageReference Include="Opc.UaFx.Client" Version="2.41.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="AzureConString.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OpcUaConnectionString.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OpcUaDeviceName.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

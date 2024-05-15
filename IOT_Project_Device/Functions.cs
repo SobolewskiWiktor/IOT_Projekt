@@ -15,8 +15,8 @@ namespace IOT_Project_Device
     public class MyDevice
     {
         private readonly DeviceClient deviceClient;
-        string OPCstring = File.ReadAllText(@"ConnectionOpcUa.txt");
-        string DeviceName = File.ReadAllText(@"DeviceName.txt");
+        string OPCstring = File.ReadAllText("OpcUaConnectionString.txt");
+        string DeviceName = File.ReadAllText("OpcUaDeviceName.txt");
         public MyDevice(DeviceClient deviceClient)
         {
             this.deviceClient = deviceClient;
@@ -24,7 +24,11 @@ namespace IOT_Project_Device
         #region Sendmsg
         public async Task SendMessages(int nrOfMessages = 1, int delay = 0)
         {
-            Console.WriteLine("Getting Data...");
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("|=============================================|");
+            Console.WriteLine("[Agent] Getting data from Opc Ua ..");
             var client = new OpcClient(OPCstring);
             client.Connect();
 
@@ -37,7 +41,7 @@ namespace IOT_Project_Device
                 Temperature = client.ReadNode($"ns=2;s={DeviceName}/Temperature").Value,
                 GoodCount = client.ReadNode($"ns=2;s={DeviceName}/GoodCount").Value,
                 BadCount = client.ReadNode($"ns=2;s={DeviceName}/BadCount").Value,
-                //ProductionRate = client.ReadNode($"ns=2;s=Device 1/ProductionRate").Value,
+                ProductionRate = client.ReadNode($"ns=2;s=Device 1/ProductionRate").Value,
             };
 
 
@@ -67,22 +71,24 @@ namespace IOT_Project_Device
             if (DeviceErrorNode == 14)
             {
                 client.CallMethod($"ns=2;s={DeviceName}", $"ns=2;s={DeviceName}/EmergencyStop");
-                Console.WriteLine("DEVICE STOPPED BY READING TOO MANY ERRORS!");
+                Console.WriteLine("[Agent] DEVICE STOPPED BY READING TOO MANY ERRORS!");
             }
 
             await UpdateTwinData(ProductionRateNode, DeviceErrorNode);
-            Console.WriteLine("Data Collected");
-            Console.WriteLine($"Device sending message to IoTHUB ..\n");
+            Console.WriteLine("[Agent] Data Collected");
+            Console.WriteLine("[Agent] Device sending message to Azure IOT HUB\n");
             var DataString = JsonConvert.SerializeObject(data);
 
             Message eventMessage = new Message(Encoding.UTF8.GetBytes(DataString));
             eventMessage.ContentType = MediaTypeNames.Application.Json;
             eventMessage.ContentEncoding = "utf-8";
-            Console.WriteLine($"\t{DateTime.Now.ToLocalTime()}> Sending message ,Data: [{DataString}]");
+            Console.WriteLine( $"[Agent]{DateTime.Now.ToLocalTime()} --- Message sending");
+            Console.WriteLine($"[Data] [{DataString}]");
+
 
             await deviceClient.SendEventAsync(eventMessage);
             client.Disconnect();
-            Console.WriteLine("Message Send");
+            Console.WriteLine("[Agent] Message Send to Azure");
         }
 
         public async Task TimerSendingMessages()
@@ -104,7 +110,7 @@ namespace IOT_Project_Device
             {
                 if (DeviceErrorNode == 0)
                 {
-                    Console.WriteLine("Device Offline -> Not Sending Data");
+                    Console.WriteLine(" [Agent] Device Offline -> Not Sending Data");
                 }
                 else
                 {
@@ -129,7 +135,7 @@ namespace IOT_Project_Device
                         DeviceErrorNode = DeviceErrorNode - 1;
                         DeviceErrorString = DeviceErrorString + "Emergency Stop ,";
                     }
-                    Console.WriteLine("Device OFFLINE -> Errors: " + DeviceErrorString + " -> NOT SENDING DATA");
+                    Console.WriteLine(" [Agent] Device OFFLINE -> Errors: " + DeviceErrorString + " -> NOT SENDING DATA");
 
                 }
             }
@@ -182,10 +188,10 @@ namespace IOT_Project_Device
         #endregion
         private async Task On2cdMessageRecievedAsync(Message reciecedMessage, object _)
         {
-            Console.WriteLine($"\t{DateTime.Now}> C2D message callback - message recieved with id={reciecedMessage.MessageId}");
+            Console.WriteLine($"[Agent] \t{DateTime.Now}> C2D message callback - message recieved with id={reciecedMessage.MessageId}");
             PrintMessages(reciecedMessage);
             await deviceClient.CompleteAsync(reciecedMessage);
-            Console.WriteLine($"\t{DateTime.Now}> Completed C2D message with ID={reciecedMessage.MessageId}");
+            Console.WriteLine($"[Agent] \t{DateTime.Now}> Completed C2D message with ID={reciecedMessage.MessageId}");
             reciecedMessage.Dispose();
 
         }
@@ -210,7 +216,7 @@ namespace IOT_Project_Device
             client.Connect();
             await Task.Delay(10);
             client.WriteNode($"ns=2;s=Device 1/ProductionStatus", 1);
-            Console.WriteLine("Device Run! by SDK");
+            Console.WriteLine("[Agent] Device Run! By Controller");
             client.Disconnect();
             return new MethodResponse(0);
         }
@@ -224,24 +230,24 @@ namespace IOT_Project_Device
             Console.WriteLine(client.ReadNode("ns=2;s=Device 1/ProductionStatus"));
 
             client.Disconnect();
-            Console.WriteLine("Device Stop! by SDK");
+            Console.WriteLine("[Agent] Device Stop! By Controller");
             return new MethodResponse(0);
         }
 
         private void PrintMessages(Message recievedMessage)
         {
             string messageData = Encoding.ASCII.GetString(recievedMessage.GetBytes());
-            Console.WriteLine($"\t\tRecieved message: {messageData}");
+            Console.WriteLine($"[Agent] \t\tRecieved message: {messageData}");
             int propCount = 0;
             foreach (var prop in recievedMessage.Properties)
             {
-                Console.WriteLine($"\t\tProperty[{propCount++}>Key={prop.Key}:Value={prop.Value}");
+                Console.WriteLine($"[Agent] \t\tProperty[{propCount++}>Key={prop.Key}:Value={prop.Value}");
             }
         }
 
         private async Task<MethodResponse> SendMessagesHandler(MethodRequest methodRequest, object userContext)
         {
-            Console.WriteLine("Method Requested: ");
+            Console.WriteLine("[Agent] Method Requested: ");
             Console.WriteLine(methodRequest);
 
             await SendMessages();
@@ -250,7 +256,7 @@ namespace IOT_Project_Device
 
         private async Task<MethodResponse> DefaultServiceHandler(MethodRequest methodRequest, object userContext)
         {
-            Console.WriteLine("Method Requested: ");
+            Console.WriteLine("[Agent] Method Requested: ");
             Console.WriteLine(methodRequest);
 
             await Task.Delay(1000);
@@ -260,7 +266,7 @@ namespace IOT_Project_Device
         public async Task UpdateTwinAsync()
         {
             var twin = await deviceClient.GetTwinAsync();
-            Console.WriteLine($"\tInitial twin value recived: \n{JsonConvert.SerializeObject(twin, Formatting.Indented)} ");
+            Console.WriteLine($"[Agent] \tInitial twin value recived: \n{JsonConvert.SerializeObject(twin, Formatting.Indented)} ");
 
             var reportedProperties = new TwinCollection();
             reportedProperties["DateTimeLastAppLaunch"] = DateTime.Now;
@@ -271,8 +277,8 @@ namespace IOT_Project_Device
         }
         private async Task OnDesirePropertyChanged(TwinCollection desiredProperties, object _)
         {
-            Console.WriteLine($"\t Desired property change: \n\t {JsonConvert.SerializeObject(desiredProperties)}");
-            Console.WriteLine("\tSending current time as reported property");
+            Console.WriteLine($"[Agent] \t Desired property change: \n\t {JsonConvert.SerializeObject(desiredProperties)}");
+            Console.WriteLine("[Agent] \tSending current time as reported property");
             TwinCollection reportedProperties = new TwinCollection();
             reportedProperties["ProductionRate"] = desiredProperties["ProductionRate"];
 
@@ -295,7 +301,7 @@ namespace IOT_Project_Device
             var ProdRate = new OpcReadNode($"ns=2;s={DeviceName}/ProductionRate");
             var tempProdRateVal = client.ReadNode(ProdRate);
             int FinalProdRateChange = ((int)(tempProdRateVal.As<float>() + 10));
-            client.WriteNode($"ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
+            client.WriteNode($"[Agent] ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
 
             client.Disconnect();
             return new MethodResponse(0);
@@ -309,7 +315,7 @@ namespace IOT_Project_Device
             var ProdRate = new OpcReadNode($"ns=2;s={DeviceName}/ProductionRate");
             var tempProdRateVal = client.ReadNode(ProdRate);
             int FinalProdRateChange = ((tempProdRateVal.As<int>() - 10));
-            client.WriteNode($"ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
+            client.WriteNode($"[Agent] ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
 
             client.Disconnect();
             return new MethodResponse(0);
@@ -324,7 +330,7 @@ namespace IOT_Project_Device
             //var test = new OpcCallMethod("Device1", "ns=2;s={DeviceName}/EmergencyStop");
 
             client.Disconnect();
-            Console.WriteLine("STOP!!!!!!");
+            Console.WriteLine("[Agent] STOP!");
             return new MethodResponse(0);
         }
 
@@ -336,7 +342,7 @@ namespace IOT_Project_Device
             client.CallMethod($"ns=2;s={DeviceName}", $"ns=2;s={DeviceName}/ResetErrorStatus");
 
             client.Disconnect();
-            Console.WriteLine("Errors Reseted =)");
+            Console.WriteLine("[Agent] Errors Reseted");
             return new MethodResponse(0);
         }
     }
