@@ -7,7 +7,7 @@ Console.WriteLine("[Controller] Azure Conntecting String Loaded");
 using var serviceClient = ServiceClient.CreateFromConnectionString(conString);
 using var registryManager = RegistryManager.CreateFromConnectionString(conString);
 
-var manager = new IotHubManager(serviceClient, registryManager);
+var manager = new IOT_Projekt.IotHubManager(serviceClient, registryManager);
 
 int input;
 do
