@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOT_Projekt", "IOT_Projekt\IOT_Projekt.csproj", "{3BFE9D22-DEDD-471A-B608-D742CF517386}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOT_Project_Device", "IOT_Project_Device\IOT_Project_Device.csproj", "{6ECB103A-98ED-49C5-9EA2-994193E57016}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BFE9D22-DEDD-471A-B608-D742CF517386}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BFE9D22-DEDD-471A-B608-D742CF517386}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BFE9D22-DEDD-471A-B608-D742CF517386}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BFE9D22-DEDD-471A-B608-D742CF517386}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ECB103A-98ED-49C5-9EA2-994193E57016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECB103A-98ED-49C5-9EA2-994193E57016}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECB103A-98ED-49C5-9EA2-994193E57016}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECB103A-98ED-49C5-9EA2-994193E57016}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4555D2A3-1805-48B1-815B-0C95CA778616}
+	EndGlobalSection
+EndGlobal
