@@ -50,8 +50,7 @@
                     string devideID = System.Console.ReadLine() ?? string.Empty;
 
                     var result = await manager.ExecuteDeviceMethod("SendMessages", devideID);
-                    Console.WriteLine("Method Executed with:");
-                    Console.WriteLine(result);
+                    Console.WriteLine($"[Controller] Method Executed with: {result}");
                 }
                 break;
             case 4:
@@ -60,8 +59,7 @@
                     string devideID = System.Console.ReadLine() ?? string.Empty;
 
                     var result = await manager.ExecuteDeviceMethod("EmergencyStop", devideID);
-                    Console.WriteLine("Method Executed with:");
-                    Console.WriteLine(result);
+                    Console.WriteLine($"[Controller] Method Executed with: {result}");
                 }
                 break;
             case 5:
@@ -70,8 +68,7 @@
                     string devideID = System.Console.ReadLine() ?? string.Empty;
 
                     var result = await manager.ExecuteDeviceMethod("ClearErrors", devideID);
-                    Console.WriteLine("Method Executed with:");
-                    Console.WriteLine(result);
+                    Console.WriteLine($"[Controller] Method Executed with: {result}");
                 }
                 break;
             case 6:
@@ -80,8 +77,7 @@
                     string devideID = System.Console.ReadLine() ?? string.Empty;
 
                     var result = await manager.ExecuteDeviceMethod("ChangeProdRateUP", devideID);
-                    Console.WriteLine("Method Executed with:");
-                    Console.WriteLine(result);
+                    Console.WriteLine($"[Controller] Method Executed with: {result}");
                 }
                 break;
             case 7:
@@ -90,8 +86,7 @@
                     string devideID = System.Console.ReadLine() ?? string.Empty;
 
                     var result = await manager.ExecuteDeviceMethod("ChangeProdRateDOWN", devideID);
-                    Console.WriteLine("Method Executed with:");
-                    Console.WriteLine(result);
+                    Console.WriteLine($"[Controller] Method Executed with: {result}");
                 }
                 break;
             case 8:

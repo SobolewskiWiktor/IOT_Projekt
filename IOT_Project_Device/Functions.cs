@@ -298,10 +298,13 @@ namespace IOT_Project_Device
             var client = new OpcClient(OPCstring);
             client.Connect();
             await Task.Delay(1000);
+            Console.WriteLine("[DEBUG] UpdateProduciotnRateup");
             var ProdRate = new OpcReadNode($"ns=2;s={DeviceName}/ProductionRate");
+            Console.WriteLine($"[DEBUG] {ProdRate}");
             var tempProdRateVal = client.ReadNode(ProdRate);
             int FinalProdRateChange = ((int)(tempProdRateVal.As<float>() + 10));
-            client.WriteNode($"[Agent] ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
+            Console.WriteLine($"[DEBUG] {FinalProdRateChange}");
+            client.WriteNode($"ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
 
             client.Disconnect();
             return new MethodResponse(0);
@@ -315,7 +318,7 @@ namespace IOT_Project_Device
             var ProdRate = new OpcReadNode($"ns=2;s={DeviceName}/ProductionRate");
             var tempProdRateVal = client.ReadNode(ProdRate);
             int FinalProdRateChange = ((tempProdRateVal.As<int>() - 10));
-            client.WriteNode($"[Agent] ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
+            client.WriteNode($"ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
 
             client.Disconnect();
             return new MethodResponse(0);
